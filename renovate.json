@@ -1,0 +1,7 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base", ":semanticCommits"],
+  "postUpdateOptions": ["pnpmDedupe"],
+  "prBodyTemplate": "{{{table}}}{{{notes}}}{{{changelogs}}}",
+  "schedule": ["every 2 months on the first day of the month"]
+}
