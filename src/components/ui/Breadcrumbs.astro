@@ -1,0 +1,34 @@
+---
+interface Props {
+  segments: { label: string; href?: string }[];
+  meta?: { label: string; value: string; icon?: string }[];
+}
+
+const { segments, meta = [] } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class="flex items-center gap-2 mb-8 font-mono text-[11px] text-on-surface-variant">
+  {segments.map((seg, i) => (
+    <>
+      {i > 0 && <span class="text-outline-variant">/</span>}
+      {seg.href ? (
+        <a href={seg.href} class="text-primary hover:text-primary-container transition-colors">{seg.label}</a>
+      ) : i < segments.length - 1 ? (
+        <span class="text-primary">{seg.label}</span>
+      ) : (
+        <span class="text-on-surface">{seg.label}</span>
+      )}
+    </>
+  ))}
+  {meta.length > 0 && (
+    <span class="ml-auto flex items-center gap-4">
+      {meta.map((m) => (
+        <span class="flex items-center gap-1">
+          {m.icon === "dot" && <span class="w-2 h-2 rounded-full bg-secondary" />}
+          {m.icon === "history" && <span class="material-symbols-outlined text-xs">history</span>}
+          {m.value}
+        </span>
+      ))}
+    </span>
+  )}
+</nav>

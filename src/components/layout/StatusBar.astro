@@ -1,0 +1,32 @@
+---
+const buildDate = new Date().toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "short",
+});
+---
+
+<footer class="fixed bottom-0 w-full h-6 border-t border-primary-container/10 bg-background flex items-center justify-between px-3 z-50">
+  <div class="flex items-center gap-4">
+    <div class="flex items-center gap-1 font-mono text-[10px] uppercase tracking-tighter text-text-rose hover:text-primary-container cursor-default">
+      <span class="material-symbols-outlined text-[10px]">sync</span>
+      v1.0.0 // m4rvin.xyz
+    </div>
+    <div class="h-3 w-[1px] bg-outline-variant/30"></div>
+    <div class="flex items-center gap-2 font-mono text-[10px] text-muted">
+      <span class="text-secondary">&#9679;</span> Static
+    </div>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <span class="font-mono text-[10px] uppercase tracking-tighter text-muted hover:text-primary-container cursor-default">
+      UTF-8
+    </span>
+    <span class="font-mono text-[10px] uppercase tracking-tighter text-muted hover:text-primary-container cursor-default">
+      {buildDate}
+    </span>
+    <div class="flex items-center gap-1 font-mono text-[10px] uppercase tracking-tighter text-muted hover:text-primary-container cursor-default">
+      <span class="material-symbols-outlined text-[10px]">check_circle</span>
+      Astro
+    </div>
+  </div>
+</footer>

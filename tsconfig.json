@@ -1,7 +1,6 @@
 {
-  "extends": "astro/tsconfigs/strictest",
+  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "strictNullChecks": true,
-    "plugins": [{ "name": "@astrojs/ts-plugin" }]
+    "strictNullChecks": true
   }
 }

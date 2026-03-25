@@ -1,51 +1,104 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import FormattedDate from '../components/FormattedDate.astro';
+import BaseLayout from "./BaseLayout.astro";
+import Breadcrumbs from "../components/ui/Breadcrumbs.astro";
+import type { CollectionEntry } from "astro:content";
 
-type Props = CollectionEntry<'blog'>['data'];
+interface Props {
+  post: CollectionEntry<"blog">;
+}
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { post } = Astro.props;
+const { title, description, pubDate, updatedDate, tags } = post.data;
+
+const formattedDate = pubDate.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+});
+
+const formattedUpdated = updatedDate?.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+});
+
+const breadcrumbs = [
+  { label: "root", href: "/" },
+  { label: "blog", href: "/blog" },
+  { label: post.id },
+];
 ---
 
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			.title {
-				font-size: 2em;
-				margin: 0.25em 0 0;
-			}
-			hr {
-				border-top: 1px solid #ddd;
-				margin: 1rem 0;
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
-	</head>
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  publishedDate={pubDate}
+>
+  <Breadcrumbs segments={breadcrumbs} />
 
-	<body>
-		<Header />
-		<main>
-			<article>
-				{heroImage && <img width={720} height={360} src={heroImage} alt="" />}
-				<h1 class="title">{title}</h1>
-				<FormattedDate date={pubDate} />
-				{
-					updatedDate && (
-						<div class="last-updated-on">
-							Last updated on <FormattedDate date={updatedDate} />
-						</div>
-					)
-				}
-				<hr />
-				<slot />
-			</article>
-		</main>
-		<Footer />
-	</body>
-</html>
+  <article>
+    <!-- Article header -->
+    <header class="mb-10">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="material-symbols-outlined text-primary-container text-2xl">description</span>
+        <div class="flex items-center gap-2 font-mono text-[10px] text-on-surface-variant/60 uppercase tracking-tighter">
+          <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+          {updatedDate && (
+            <>
+              <span class="text-outline-variant">|</span>
+              <span>Updated {formattedUpdated}</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      <h1 class="font-headline text-3xl md:text-4xl font-bold tracking-tight text-on-surface mb-3">
+        {title}
+      </h1>
+
+      <p class="text-on-surface-variant font-body text-base leading-relaxed max-w-2xl">
+        {description}
+      </p>
+
+      {tags && tags.length > 0 && (
+        <div class="flex items-center gap-2 mt-4">
+          {tags.map((tag) => (
+            <span class="px-2 py-0.5 bg-surface-container text-primary font-mono text-[10px] uppercase tracking-wider border border-outline-variant/20">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div class="mt-6 border-b border-primary-container/10" />
+    </header>
+
+    <!-- Article content -->
+    <div class="prose font-body">
+      <slot />
+    </div>
+  </article>
+
+  <!-- JSON-LD structured data -->
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: title,
+      description: description,
+      datePublished: pubDate.toISOString(),
+      ...(updatedDate && { dateModified: updatedDate.toISOString() }),
+      author: {
+        "@type": "Person",
+        name: "Marvin Drees",
+        url: "https://m4rvin.xyz/about",
+      },
+      publisher: {
+        "@type": "Person",
+        name: "Marvin Drees",
+      },
+    })}
+  />
+</BaseLayout>

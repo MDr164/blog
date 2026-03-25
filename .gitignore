@@ -1,4 +1,12 @@
+node_modules/
+dist/
+.astro/
 .DS_Store
-dist
-.astro
-node_modules
+*.local
+
+# Previous site iteration (reference only)
+old/
+
+# Editor / IDE
+.claude/
+.pnpmrc.json

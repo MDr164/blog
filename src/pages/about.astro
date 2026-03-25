@@ -1,21 +1,45 @@
 ---
-import Layout from '../layouts/BlogPost.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/ui/Breadcrumbs.astro";
+import { AUTHOR, AUTHOR_HANDLE } from "../lib/constants";
 ---
 
-<Layout
-	title="About Me"
-	description="Lorem ipsum dolor sit amet"
-	pubDate={new Date('June 02 2023')}
-	updatedDate={new Date('June 02 2023')}
->
-	<p>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-		labore et dolore magna aliqua. Vitae ultricies leo integer malesuada nunc vel risus commodo
-		viverra. Adipiscing enim eu turpis egestas pretium. Euismod elementum nisi quis eleifend quam
-		adipiscing. In hac habitasse platea dictumst vestibulum. Sagittis purus sit amet volutpat. Netus
-		et malesuada fames ac turpis egestas. Eget magna fermentum iaculis eu non diam phasellus
-		vestibulum lorem. Varius sit amet mattis vulputate enim. Habitasse platea dictumst quisque
-		sagittis. Integer quis auctor elit sed vulputate mi. Dictumst quisque sagittis purus sit amet.
-	</p>
+<BaseLayout title="About" description={`About ${AUTHOR} — firmware, hardware, and systems engineer.`}>
+  <Breadcrumbs
+    segments={[
+      { label: "root", href: "/" },
+      { label: "about" },
+    ]}
+  />
 
-</Layout>
+  <div class="mb-10">
+    <h1 class="font-headline text-4xl md:text-5xl font-bold tracking-tight text-on-surface mb-2">
+      About
+    </h1>
+    <p class="text-on-surface-variant font-mono text-sm">
+      // {AUTHOR_HANDLE}
+    </p>
+  </div>
+
+  <div class="prose font-body">
+    <p>
+      Hi, I'm <strong>{AUTHOR}</strong> (<code>{AUTHOR_HANDLE}</code>).
+      I work on firmware, hardware, and systems engineering. This blog is where
+      I document my projects, experiments, and technical deep-dives.
+    </p>
+
+    <h2>Interests</h2>
+    <ul>
+      <li>Open-source firmware (coreboot, u-bmc, OpenWrt)</li>
+      <li>Bare-metal programming (TamaGo, embedded Go)</li>
+      <li>Hardware reverse engineering</li>
+      <li>FPGAs and digital design</li>
+      <li>Systems architecture and infrastructure</li>
+    </ul>
+
+    <h2>Links</h2>
+    <ul>
+      <li><a href="https://github.com/MDr164" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+    </ul>
+  </div>
+</BaseLayout>

@@ -1,0 +1,78 @@
+---
+import { SITE_TITLE, SITE_URL, AUTHOR } from "../../lib/constants";
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  canonicalURL?: URL | string;
+  type?: "website" | "article";
+  publishedDate?: Date;
+}
+
+const {
+  title,
+  description,
+  ogImage,
+  canonicalURL = new URL(Astro.url.pathname, Astro.site),
+  type = "website",
+  publishedDate,
+} = Astro.props;
+
+const fullTitle = title === SITE_TITLE ? title : `${title} — ${SITE_TITLE}`;
+---
+
+<!-- Global metadata -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Favicon -->
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Primary meta tags -->
+<title>{fullTitle}</title>
+<meta name="title" content={fullTitle} />
+<meta name="description" content={description} />
+<meta name="author" content={AUTHOR} />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#121221" />
+
+<!-- Open Graph -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:site_name" content={SITE_TITLE} />
+<meta property="og:locale" content="en_US" />
+{ogImage && <meta property="og:image" content={new URL(ogImage, SITE_URL)} />}
+
+<!-- Twitter -->
+<meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={new URL(ogImage, SITE_URL)} />}
+
+<!-- Article metadata -->
+{type === "article" && publishedDate && (
+  <meta property="article:published_time" content={publishedDate.toISOString()} />
+  <meta property="article:author" content={AUTHOR} />
+)}
+
+<!-- Sitemap -->
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<!-- Fonts: preconnect for performance -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+<link
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+  rel="stylesheet"
+/>

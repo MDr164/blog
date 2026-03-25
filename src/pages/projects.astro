@@ -1,0 +1,90 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/ui/Breadcrumbs.astro";
+
+interface Project {
+  name: string;
+  description: string;
+  url: string;
+  tags: string[];
+  icon: string;
+}
+
+const projects: Project[] = [
+  {
+    name: "u-bmc",
+    description: "A BMC firmware alternative written in Go, designed for modern server hardware.",
+    url: "https://github.com/u-root/u-bmc",
+    tags: ["go", "firmware", "bmc"],
+    icon: "memory",
+  },
+  {
+    name: "OpenWrt Contributions",
+    description: "Device support and patches for the OpenWrt embedded Linux distribution.",
+    url: "https://github.com/openwrt/openwrt",
+    tags: ["openwrt", "embedded", "linux"],
+    icon: "router",
+  },
+  {
+    name: "Coreboot Ports",
+    description: "Open-source firmware ports for x86 mainboards.",
+    url: "https://www.coreboot.org/",
+    tags: ["coreboot", "firmware", "x86"],
+    icon: "developer_board",
+  },
+];
+---
+
+<BaseLayout title="Projects" description="Open-source projects and contributions.">
+  <Breadcrumbs
+    segments={[
+      { label: "root", href: "/" },
+      { label: "projects" },
+    ]}
+    meta={[
+      { label: "entries", value: `${projects.length}_Projects`, icon: "dot" },
+    ]}
+  />
+
+  <div class="mb-12">
+    <h1 class="font-headline text-4xl md:text-5xl font-bold tracking-tight text-on-surface mb-2">
+      Projects
+    </h1>
+    <p class="text-on-surface-variant font-mono text-sm">
+      Open-source work and contributions.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 gap-1">
+    {projects.map((project) => (
+      <a href={project.url} target="_blank" rel="noopener noreferrer" class="block group">
+        <article class="relative flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-surface-container-low hover:bg-surface-container-high transition-all duration-200 border-l-2 border-transparent hover:border-primary cursor-pointer">
+          <div class="flex items-center gap-4 flex-1 min-w-0">
+            <div class="hidden md:flex items-center justify-center w-10 h-10 bg-surface-container rounded-sm shrink-0">
+              <span class="material-symbols-outlined text-primary-container">{project.icon}</span>
+            </div>
+            <div class="min-w-0">
+              <h2 class="font-mono text-base text-on-surface group-hover:text-primary transition-colors">
+                {project.name}
+              </h2>
+              <p class="text-xs text-on-surface-variant line-clamp-1 mt-1 font-body">
+                {project.description}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 mt-3 md:mt-0 shrink-0">
+            {project.tags.map((tag) => (
+              <span class="px-2 py-0.5 bg-surface-container text-primary font-mono text-[10px] uppercase tracking-wider border border-outline-variant/20">
+                {tag}
+              </span>
+            ))}
+            <span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity text-primary ml-2">
+              open_in_new
+            </span>
+          </div>
+        </article>
+      </a>
+    ))}
+  </div>
+</BaseLayout>

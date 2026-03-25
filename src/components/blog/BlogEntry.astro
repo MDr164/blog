@@ -1,0 +1,55 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+  icon?: string;
+  iconColor?: string;
+}
+
+const { post, icon = "description", iconColor = "text-primary-container" } = Astro.props;
+const { title, description, pubDate } = post.data;
+
+const formattedDate = pubDate
+  .toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
+  .replace(/ /g, "_")
+  .replace(",", "")
+  .toUpperCase();
+
+function toFilename(id: string): string {
+  return id
+    .split("/")
+    .pop()!
+    .replace(/-/g, "_")
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    + ".md";
+}
+---
+
+<a href={`/blog/${post.id}`} class="block group">
+  <article class="relative flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-surface-container-low hover:bg-surface-container-high transition-all duration-200 border-l-2 border-transparent hover:border-primary cursor-pointer">
+    <div class="flex items-center gap-4 flex-1 min-w-0">
+      <div class="hidden md:flex items-center justify-center w-10 h-10 bg-surface-container rounded-sm shrink-0">
+        <span class:list={["material-symbols-outlined", iconColor]}>{icon}</span>
+      </div>
+      <div class="min-w-0">
+        <h2 class="font-mono text-base text-on-surface group-hover:text-primary transition-colors truncate">
+          {toFilename(post.id)}
+        </h2>
+        <p class="text-xs text-on-surface-variant line-clamp-1 mt-1 font-body">
+          {description}
+        </p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-6 mt-3 md:mt-0 shrink-0 font-mono text-[10px] text-on-surface-variant/60">
+      <div class="flex flex-col items-end">
+        <span class="uppercase tracking-tighter">Modified</span>
+        <span class="text-on-surface">{formattedDate}</span>
+      </div>
+      <span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity text-primary">
+        arrow_forward_ios
+      </span>
+    </div>
+  </article>
+</a>

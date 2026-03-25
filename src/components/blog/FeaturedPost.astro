@@ -1,0 +1,87 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate } = post.data;
+
+const formattedDate = pubDate.toLocaleDateString("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+});
+---
+
+<section class="mt-16" aria-label="Featured post">
+  <h3 class="font-headline text-lg font-bold mb-6 text-primary flex items-center gap-2">
+    <span class="material-symbols-outlined">stars</span> Featured
+  </h3>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Featured card -->
+    <a href={`/blog/${post.id}`} class="md:col-span-2 relative h-64 bg-surface-container-high overflow-hidden group block">
+      <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10"></div>
+      <!-- Abstract pattern overlay -->
+      <div class="absolute inset-0 opacity-20">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" class="text-primary-container">
+          <defs>
+            <pattern id="featured-pattern" patternUnits="userSpaceOnUse" width="60" height="60">
+              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="currentColor" stroke-width="0.5" />
+              <circle cx="30" cy="30" r="1.5" fill="currentColor" opacity="0.5" />
+              <path d="M 30 0 L 30 60 M 0 30 L 60 30" fill="none" stroke="currentColor" stroke-width="0.25" opacity="0.3" />
+            </pattern>
+          </defs>
+          <rect fill="url(#featured-pattern)" width="100%" height="100%" />
+        </svg>
+      </div>
+      <div class="absolute bottom-6 left-6 z-20">
+        <span class="px-2 py-0.5 bg-primary text-on-primary font-mono text-[10px] uppercase font-bold">
+          Latest
+        </span>
+        <h4 class="font-headline text-2xl font-bold text-on-surface mt-2 group-hover:text-primary transition-colors">
+          {title}
+        </h4>
+        <p class="text-sm text-on-surface-variant/80 font-mono mt-1">
+          {description}
+        </p>
+      </div>
+    </a>
+
+    <!-- Stats sidebar -->
+    <div class="bg-surface-container-low p-6 flex flex-col justify-between border-t border-primary/20">
+      <div>
+        <span class="font-mono text-[10px] text-primary">Post_Info</span>
+        <div class="mt-4 space-y-4">
+          <div>
+            <div class="flex justify-between text-[10px] font-mono text-on-surface-variant">
+              <span>Published</span>
+              <span class="text-on-surface">{formattedDate}</span>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between text-[10px] font-mono text-on-surface-variant">
+              <span>Status</span>
+              <span class="text-secondary">Published</span>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between text-[10px] font-mono text-on-surface-variant">
+              <span>Format</span>
+              <span class="text-on-surface">Markdown</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a
+        href={`/blog/${post.id}`}
+        class="block w-full py-2 bg-surface-container text-on-surface font-mono text-[10px] hover:bg-surface-container-highest transition-colors uppercase tracking-widest border border-outline-variant/20 text-center mt-6"
+      >
+        Read Post
+      </a>
+    </div>
+  </div>
+</section>

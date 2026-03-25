@@ -1,0 +1,11 @@
+---
+interface Props {
+  name: string;
+  class?: string;
+  size?: string;
+}
+
+const { name, class: className = "", size = "text-sm" } = Astro.props;
+---
+
+<span class:list={["material-symbols-outlined", size, className]}>{name}</span>

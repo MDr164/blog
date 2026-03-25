@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="404 — File Not Found" description="The requested file could not be found.">
+  <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
+    <div class="mb-6">
+      <span class="material-symbols-outlined text-6xl text-muted">folder_off</span>
+    </div>
+
+    <h1 class="font-mono text-6xl font-bold text-primary mb-4">404</h1>
+
+    <p class="font-mono text-sm text-on-surface-variant mb-2">
+      Error: ENOENT — File not found
+    </p>
+    <p class="font-mono text-xs text-muted mb-8">
+      The requested resource does not exist in this workspace.
+    </p>
+
+    <div class="bg-surface-container-low border border-outline-variant/20 p-4 font-mono text-xs text-on-surface-variant max-w-md w-full text-left mb-8">
+      <span class="text-error">$</span> cat {Astro.url.pathname}<br />
+      <span class="text-error">cat:</span> {Astro.url.pathname}: No such file or directory
+    </div>
+
+    <a
+      href="/"
+      class="px-4 py-2 bg-surface-container text-on-surface font-mono text-xs hover:bg-surface-container-high transition-colors uppercase tracking-widest border border-outline-variant/20"
+    >
+      Return to Root
+    </a>
+  </div>
+</BaseLayout>
