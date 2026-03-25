@@ -2,63 +2,149 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Breadcrumbs from "../components/ui/Breadcrumbs.astro";
-import BlogEntry from "../components/blog/BlogEntry.astro";
-import FeaturedPost from "../components/blog/FeaturedPost.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../lib/constants";
+import { SITE_TITLE, SITE_DESCRIPTION, AUTHOR_HANDLE } from "../lib/constants";
 
 const posts = (await getCollection("blog", ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const featuredPost = posts[0];
-const remainingPosts = posts.slice(1);
+const recentPosts = posts.slice(0, 5);
 
-const icons = ["description", "terminal", "bug_report", "monitoring", "code", "memory", "dns", "hub"];
-const iconColors = ["text-primary-container", "text-primary-container", "text-secondary", "text-tertiary", "text-primary-container", "text-secondary", "text-tertiary", "text-primary-container"];
+const quickActions = [
+  { icon: "article", label: "Blog", description: "Technical journal entries", href: "/blog", key: "B" },
+  { icon: "code", label: "Projects", description: "Open-source work", href: "/projects", key: "P" },
+  { icon: "person", label: "About", description: "Who is MDr164", href: "/about", key: "A" },
+  { icon: "hub", label: "GitHub", description: "Source code", href: "https://github.com/MDr164", key: "G", external: true },
+];
+
+function toFilename(id: string): string {
+  return id
+    .split("/")
+    .pop()!
+    .replace(/-/g, "_")
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    + ".md";
+}
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
   <Breadcrumbs
     segments={[
       { label: "root", href: "/" },
-      { label: "src" },
-      { label: "blog" },
-    ]}
-    meta={[
-      { label: "entries", value: `${posts.length}_Entries`, icon: "dot" },
-      { label: "updated", value: "Just now", icon: "history" },
+      { label: "welcome" },
     ]}
   />
 
-  <!-- Page title -->
+  <!-- Welcome header -->
   <div class="mb-12">
     <h1 class="font-headline text-4xl md:text-5xl font-bold tracking-tight text-on-surface mb-2">
-      Technical Journal
+      Welcome
     </h1>
     <p class="text-on-surface-variant font-mono text-sm">
-      Firmware, hardware, and systems engineering notes.
+      // {AUTHOR_HANDLE}@m4rvin.xyz — v1.0.0
     </p>
   </div>
 
-  <!-- Blog index grid -->
-  {posts.length > 0 ? (
-    <div class="grid grid-cols-1 gap-1" role="list">
-      {posts.map((post, i) => (
-        <div role="listitem">
-          <BlogEntry
-            post={post}
-            icon={icons[i % icons.length]}
-            iconColor={iconColors[i % iconColors.length]}
-          />
-        </div>
+  <!-- Quick Actions -->
+  <section class="mb-16" aria-label="Quick actions">
+    <div class="flex items-center gap-2 mb-4">
+      <span class="font-mono text-[10px] tracking-widest uppercase text-on-surface-variant/40">
+        Quick_Actions
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {quickActions.map((action) => (
+        <a
+          href={action.href}
+          target={action.external ? "_blank" : undefined}
+          rel={action.external ? "noopener noreferrer" : undefined}
+          class="group flex items-center gap-4 p-4 bg-surface-container-low hover:bg-surface-container-high border border-transparent hover:border-primary/30 transition-all duration-200 cursor-pointer"
+        >
+          <div class="flex items-center justify-center w-10 h-10 bg-surface-container rounded-sm shrink-0 group-hover:bg-surface-container-highest transition-colors">
+            <span class="material-symbols-outlined text-primary-container">{action.icon}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-sm text-on-surface group-hover:text-primary transition-colors">
+                {action.label}
+              </span>
+              {action.external && (
+                <span class="material-symbols-outlined text-xs text-muted opacity-0 group-hover:opacity-100 transition-opacity">
+                  open_in_new
+                </span>
+              )}
+            </div>
+            <p class="text-xs text-on-surface-variant/70 font-body mt-0.5">
+              {action.description}
+            </p>
+          </div>
+          <div class="hidden sm:flex items-center justify-center px-1.5 py-0.5 bg-surface-container rounded-sm border border-outline-variant/20">
+            <span class="font-mono text-[10px] text-muted">
+              Ctrl+{action.key}
+            </span>
+          </div>
+        </a>
       ))}
     </div>
-  ) : (
-    <div class="text-center py-16">
-      <span class="material-symbols-outlined text-4xl text-muted mb-4">edit_note</span>
-      <p class="text-on-surface-variant font-mono text-sm">No posts published yet.</p>
-    </div>
+  </section>
+
+  <!-- Recent Files -->
+  {recentPosts.length > 0 && (
+    <section class="mb-16" aria-label="Recent files">
+      <div class="flex items-center justify-between mb-4">
+        <span class="font-mono text-[10px] tracking-widest uppercase text-on-surface-variant/40">
+          Recent_Files
+        </span>
+        <a href="/blog" class="font-mono text-[10px] text-primary hover:text-primary-container transition-colors uppercase tracking-wider">
+          View All
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 gap-1">
+        {recentPosts.map((post) => (
+          <a href={`/blog/${post.id}`} class="group flex items-center justify-between p-3 bg-surface-container-low hover:bg-surface-container-high transition-all duration-200 border-l-2 border-transparent hover:border-primary">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="material-symbols-outlined text-sm text-primary-container">description</span>
+              <span class="font-mono text-sm text-on-surface group-hover:text-primary transition-colors truncate">
+                {toFilename(post.id)}
+              </span>
+            </div>
+            <span class="font-mono text-[10px] text-on-surface-variant/60 shrink-0 ml-4">
+              {post.data.pubDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
   )}
 
-  <!-- Featured section -->
-  {featuredPost && <FeaturedPost post={featuredPost} />}
+  <!-- Tips -->
+  <section aria-label="Tips">
+    <div class="flex items-center gap-2 mb-4">
+      <span class="font-mono text-[10px] tracking-widest uppercase text-on-surface-variant/40">
+        Tips
+      </span>
+    </div>
+
+    <div class="bg-surface-container-low p-4 border border-outline-variant/10">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs text-on-surface-variant/60">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-sm text-muted">lightbulb</span>
+          <span>Blog posts are plain <code class="text-primary px-1 py-0.5 bg-surface-container rounded-sm text-[10px]">.md</code> files in <code class="text-primary px-1 py-0.5 bg-surface-container rounded-sm text-[10px]">src/content/blog/</code></span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-sm text-muted">lightbulb</span>
+          <span>Built with <code class="text-secondary px-1 py-0.5 bg-surface-container rounded-sm text-[10px]">Astro</code> + <code class="text-tertiary px-1 py-0.5 bg-surface-container rounded-sm text-[10px]">Svelte</code> + <code class="text-primary px-1 py-0.5 bg-surface-container rounded-sm text-[10px]">Tailwind</code></span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-sm text-muted">lightbulb</span>
+          <span>Zero JS shipped to client by default</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-sm text-muted">lightbulb</span>
+          <span>Deployed to Cloudflare Workers as static HTML</span>
+        </div>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

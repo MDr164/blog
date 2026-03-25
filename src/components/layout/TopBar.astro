@@ -14,7 +14,7 @@ const navItems = [
 ];
 
 function isActive(href: string): boolean {
-  if (href === "/blog") return currentPath === "/" || currentPath.startsWith("/blog");
+  if (href === "/blog") return currentPath.startsWith("/blog");
   return currentPath.startsWith(href);
 }
 ---
