@@ -23,7 +23,7 @@
     "prettier": "^3.0.0",
     "prettier-plugin-astro": "^0.14.0",
     "typescript": "^5.8.0",
-    "wrangler": "^4.0.0"
+    "wrangler": "^4.87.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
